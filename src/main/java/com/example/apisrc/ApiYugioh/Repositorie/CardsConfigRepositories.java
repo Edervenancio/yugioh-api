@@ -7,10 +7,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+@Repository("CardsConfig")
 public interface CardsConfigRepositories extends JpaRepository<CardsConfig, Integer> {
 
     @Query(value = "SELECT cc FROM CardsConfig cc where cc.cardType = ?1")
-    List<CardsConfigRepositories> findByType(String name);
-    List<CardsConfigRepositories> findByAttribute(String name);
+    List<CardsConfig> findByType(String cardType);
+
+    @Query(value = "SELECT cc FROM CardsConfig cc where cc.cardAttribute = ?1")
+     List<CardsConfig> findByCardAttribute(String cardAttribute);
 }
