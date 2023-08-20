@@ -17,7 +17,9 @@ import java.util.Objects;
 @RequestMapping("/api")
 public class CardsConfigController {
 
-    private CardsConfigService cardsConfigService;
+
+    private final CardsConfigService cardsConfigService;
+
     @Autowired
     public CardsConfigController(CardsConfigService cardsConfigService) {
         this.cardsConfigService = cardsConfigService;
@@ -26,13 +28,19 @@ public class CardsConfigController {
 
 
 
+    @GetMapping(value = "/card/{cardType}/{cardAttribute}")
+    public CardsConfig findCardByTypeAndAttribute(@PathVariable String cardType, @PathVariable String cardAttribute){
+        return cardsConfigService.findCardByTypeAndAttribute(cardType, cardAttribute);
+    }
+
+
     @GetMapping(value = "/cardType/{cardType}")
     public ResponseEntity<List<CardsConfig>> findCardByType(@PathVariable String cardType){
 
         String found = cardsConfigService.findCardByType(cardType).toString();
 
         System.out.println(found);
-            if((cardType == "")){
+            if((cardType.equals(""))){
                 throw new CardsConfigNotFoundException("Not found Card Type");
             }
                 return new ResponseEntity<>(cardsConfigService.findCardByType(cardType), HttpStatus.OK);
@@ -49,12 +57,15 @@ public class CardsConfigController {
    @PostMapping("/cards/add")
    public CardsConfig addCardsConfig(@RequestBody CardsConfig cardsConfig){
 
+       CardsConfig addCardsConfig = cardsConfigService.save(cardsConfig);
+       cardsConfig.setIdCardConfig(0);
 
-        cardsConfig.setIdCardConfig(0);
-        CardsConfig addCardsConfig = cardsConfigService.save(cardsConfig);
 
-        return addCardsConfig;
+       return addCardsConfig;
    }
+
+
+
 
    @GetMapping("/cards")
     public List <CardsConfig> getAllCards(){
@@ -62,16 +73,16 @@ public class CardsConfigController {
    }
 
 
-   @ExceptionHandler
-    public ResponseEntity<CardsConfigErrorResponse> handleException (CardsConfigNotFoundException exc){
-        CardsConfigErrorResponse error = new CardsConfigErrorResponse();
-
-        error.setStatus(HttpStatus.NOT_FOUND.value());
-        error.setMessage(exc.getMessage());
-        error.setTimeStamp(System.currentTimeMillis());
-
-
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+   @DeleteMapping(value = "/cardDelete")
+   public void deleteAllCards(){
+        cardsConfigService.deleteAll();
+    }
+   @DeleteMapping(value = "/cardDelete/{id}")
+   public void deleteCard(@PathVariable int id){
+        cardsConfigService.deleteCardConfig(id);
    }
+
+
+
 
 }

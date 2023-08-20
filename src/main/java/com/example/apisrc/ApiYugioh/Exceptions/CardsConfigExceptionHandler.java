@@ -23,4 +23,17 @@ public class CardsConfigExceptionHandler {
     }
 
 
+    @ExceptionHandler
+    public ResponseEntity<CardsConfigErrorResponse> handleException (Exception exc){
+        CardsConfigErrorResponse error = new CardsConfigErrorResponse();
+
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        error.setMessage(exc.getMessage());
+        error.setTimeStamp(System.currentTimeMillis());
+
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+
 }
