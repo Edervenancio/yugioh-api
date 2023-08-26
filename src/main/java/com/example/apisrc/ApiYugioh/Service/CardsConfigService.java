@@ -11,6 +11,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CardsConfigService {
@@ -39,6 +40,19 @@ public class CardsConfigService {
     }
 
 
+    @Transactional
+    public CardsConfig updateCards(CardsConfig cardsConfig){
+
+
+
+        cardsConfig.setIdCardConfig(cardsConfig.getIdCardConfig());
+        CardsConfig updateCard = cardsConfigRepositories.save(cardsConfig);
+
+        return updateCard;
+
+    }
+
+
     public List<CardsConfig> findAll(){
 
         List <CardsConfig> listOfCards = cardsConfigRepositories.findAll();
@@ -57,6 +71,21 @@ public class CardsConfigService {
             throw new CardsConfigNotFoundException("Not found any card with these type or attribute");
         } else {
             return foundCard;
+        }
+    }
+
+
+    public CardsConfig findCardById(int id) {
+        CardsConfig cardFound = cardsConfigRepositories.findCardById(id);
+
+        if (!ObjectUtils.isEmpty(cardFound)) {
+            if (id >= 0) {
+                return cardFound;
+            } else {
+                throw new CardsConfigNotFoundException("You can't find a card with id lower than 0");
+            }
+        } else {
+            throw new CardsConfigNotFoundException("There's no card to search");
         }
     }
 
@@ -86,10 +115,12 @@ public class CardsConfigService {
     public void deleteCardConfig(int id) {
 
 
+        CardsConfig cardFound = cardsConfigRepositories.findCardById(id);
         if(id < 0){
             throw new CardsConfigNotFoundException("There's no card to delete");
+        } else if (ObjectUtils.isEmpty(cardFound)){
+            throw new CardsConfigNotFoundException("Not found any card to Delete");
         } else {
-            cardsConfigRepositories.findById(id).orElseThrow(() -> new CardsConfigNotFoundException("Not found any card to Delete"));
             cardsConfigRepositories.deleteCardConfig(id);
         }
 
