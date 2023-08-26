@@ -28,14 +28,19 @@ public class CardsConfigController {
 
 
 
+    @GetMapping(value = "/card/{id}")
+    public CardsConfig findCardsConfigById(int id){
+        return cardsConfigService.findCardById(id);
+    }
+
     @GetMapping(value = "/card/{cardType}/{cardAttribute}")
-    public CardsConfig findCardByTypeAndAttribute(@PathVariable String cardType, @PathVariable String cardAttribute){
+    public CardsConfig findCardConfigByTypeAndAttribute(@PathVariable String cardType, @PathVariable String cardAttribute){
         return cardsConfigService.findCardByTypeAndAttribute(cardType, cardAttribute);
     }
 
 
     @GetMapping(value = "/cardType/{cardType}")
-    public ResponseEntity<List<CardsConfig>> findCardByType(@PathVariable String cardType){
+    public ResponseEntity<List<CardsConfig>> findCardConfigByType(@PathVariable String cardType){
 
         String found = cardsConfigService.findCardByType(cardType).toString();
 
@@ -48,7 +53,7 @@ public class CardsConfigController {
     }
 
    @GetMapping(value = "/cardAttribute/{cardAttribute}")
-   public ResponseEntity<List<CardsConfig>> findCardByAttribute(@PathVariable String cardAttribute){
+   public ResponseEntity<List<CardsConfig>> findCardConfigByAttribute(@PathVariable String cardAttribute){
 
         return new ResponseEntity<>(cardsConfigService.findCardByAttribute(cardAttribute), HttpStatus.OK);
    }
@@ -64,21 +69,28 @@ public class CardsConfigController {
        return addCardsConfig;
    }
 
+   @PutMapping("/cards/update")
+   public CardsConfig updateCardsConfig(@RequestBody CardsConfig cardsConfig){
+
+        CardsConfig updateCardsConfig = cardsConfigService.save(cardsConfig);
+
+        return updateCardsConfig;
+   }
 
 
 
    @GetMapping("/cards")
-    public List <CardsConfig> getAllCards(){
+    public List <CardsConfig> getAllCardsConfig(){
         return cardsConfigService.findAll();
    }
 
 
    @DeleteMapping(value = "/cardDelete")
-   public void deleteAllCards(){
+   public void deleteAllCardsConfig(){
         cardsConfigService.deleteAll();
     }
    @DeleteMapping(value = "/cardDelete/{id}")
-   public void deleteCard(@PathVariable int id){
+   public void deleteCardConfig(@PathVariable int id){
         cardsConfigService.deleteCardConfig(id);
    }
 
