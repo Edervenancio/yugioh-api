@@ -1,8 +1,13 @@
 package com.example.apisrc.ApiYugioh.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name="CardsConfig")
 @Getter
@@ -10,6 +15,13 @@ import lombok.Setter;
 
 @Table(name="cardsConfig")
 public class CardsConfig {
+
+
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "cardsConfig")
+    @JsonBackReference
+    private List <Monster> monsters;
+
 
 
     @Id
@@ -42,4 +54,6 @@ public class CardsConfig {
                 ", cardAttribute='" + cardAttribute + '\'' +
                 '}';
     }
+
+
 }
